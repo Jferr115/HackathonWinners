@@ -1,0 +1,61 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usepackage{pdfpages}
+\usepackage[margin=0em]{geometry}
+\usepackage{environ}
+\usepackage{amsmath,amssymb}
+\usepackage[type=none]{fgruler}
+\usepackage{graphicx}
+
+\usepackage[T1]{fontenc}
+\usepackage{charter}
+
+\newcommand{\basedoc}
+
+\newcommand{\decor}{\fgruler{upperleft}{0.4cm}{0.4cm}}
+% \renewcommand{\decor}{} %uncomment this line to remove decoration
+
+\NewEnviron{xpagenote}[2]
+{\includepdf[pagecommand={%
+                \decor
+                \begin{tikzpicture}[remember picture, overlay]
+                    \BODY
+                \end{tikzpicture}
+            },pages={#2}]{#1}
+}
+\NewEnviron{pagenote}[1]
+{\includepdf[pagecommand={%
+                \decor
+                \begin{tikzpicture}[remember picture, overlay]
+                    \BODY
+                \end{tikzpicture}
+            },pages={#1}]{\basedoc}
+}
+\newcommand{\pages}[1]{\includepdf[pagecommand={\decor},pages={#1}]{\basedoc}}
+
+\makeatletter
+\patchcmd[\long]{\pgffor@normal@list}{}{}{}{}
+\patchcmd[\long]{\pgffor@scanone}{}{}{}{}
+\patchcmd[\long]{\pgffor@dots@in@}{}{}{}{}
+\patchcmd[\long]{\pgffor@multiassignfinal}{}{}{}{}
+\makeatother
+
+%%% Document specific
+
+\newcommand\setnewlength[2]{\newlength{#1} \setlength{#1}{#2}}
+\setnewlength{\textboxleft}{2cm}
+\setnewlength{\textboxwidth}{16cm}
+\newcommand{\textbox}[2]{\node[below right] at (\textboxleft, #1) {%
+        \begin{minipage}{\textboxwidth} #2 \end{minipage}};}
+
+\begin{document}
+
+\foreach \page\note in {
+1/{},
+2/{},
+3/{},
+4/{},
+} {\begin{pagenote}{\page}\note\end{pagenote}}
+
+\end{document}
